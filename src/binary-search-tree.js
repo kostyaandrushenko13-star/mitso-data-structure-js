@@ -2,43 +2,66 @@ import { NotImplementedError } from "../extensions/index.js";
 
 // import { Node } from '../extensions/list-tree.js';
 
-/**
- * Implement simple binary search tree according to task description
- * using Node from extensions
- */
 export default class BinarySearchTree {
-  root() {
-    throw new NotImplementedError("Not implemented");
-    // remove line with error and write your code here
-  }
+constructor() {
+this.top = null;
+}
 
-  add(/* data */) {
-    throw new NotImplementedError("Not implemented");
-    // remove line with error and write your code here
-  }
+root() {
+return this.top;
+}
 
-  has(/* data */) {
-    throw new NotImplementedError("Not implemented");
-    // remove line with error and write your code here
-  }
+add(data) {
+this.top = this.insert(this.top, data);
+}
 
-  find(/* data */) {
-    throw new NotImplementedError("Not implemented");
-    // remove line with error and write your code here
-  }
+insert(node, data) {
+if (!node) return { data, left: null, right: null };
+if (data < node.data) node.left = this.insert(node.left, data);
+if (data > node.data) node.right = this.insert(node.right, data);
+return node;
+}
 
-  remove(/* data */) {
-    throw new NotImplementedError("Not implemented");
-    // remove line with error and write your code here
-  }
+has(data) {
+return this.find(data) !== null;
+}
 
-  min() {
-    throw new NotImplementedError("Not implemented");
-    // remove line with error and write your code here
-  }
+find(data) {
+let node = this.top;
+while (node && node.data !== data) {
+node = data < node.data ? node.left : node.right;
+}
+return node;
+}
 
-  max() {
-    throw new NotImplementedError("Not implemented");
-    // remove line with error and write your code here
-  }
-};
+remove(data) {
+this.top = this.cut(this.top, data);
+}
+
+cut(node, data) {
+if (!node) return null;
+if (data < node.data) node.left = this.cut(node.left, data);
+else if (data > node.data) node.right = this.cut(node.right, data);
+else if (!node.left) return node.right;
+else if (!node.right) return node.left;
+else {
+let next = node.right;
+while (next.left) next = next.left;
+node.data = next.data;
+node.right = this.cut(node.right, next.data);
+}
+return node;
+}
+
+min() {
+let node = this.top;
+while (node && node.left) node = node.left;
+return node ? node.data : null;
+}
+
+max() {
+let node = this.top;
+while (node && node.right) node = node.right;
+return node ? node.data : null;
+}
+}
